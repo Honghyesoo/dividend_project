@@ -46,6 +46,7 @@ public class YahooFinanceScraper implements Scraper{
             Element tbody = tableEle.children().get(1); // tbody 가져오기
 
             List<Dividend> dividends = new ArrayList<>();
+            int count = 0;
             for (Element e : tbody.children()) {
                 String txt = e.text();
                 if (!txt.endsWith("Dividend")) {
@@ -53,10 +54,15 @@ public class YahooFinanceScraper implements Scraper{
                 }
 
                 String[] splits = txt.split(" ");
+                //System.out.println("2nkjqwndjkqwnkjdasda=============" + Arrays.toString(splits));
                 int month = Month.strToNumber(splits[0]);
+                //System.out.println("wqjkdnqkjwndkj" + month);
                 int day = Integer.parseInt(splits[1].replace(",", ""));
+                //System.out.println("day ========= " + day);
                 int year = Integer.parseInt(splits[2]);
+                //System.out.println("year ========= " + year);
                 String dividend = splits[3];
+                //System.out.println("dividend ========= " + dividend);
 
                 if (month < 0) {
                     throw new RuntimeException("Unexpected Month enum value - > " + splits[0]);
@@ -66,8 +72,12 @@ public class YahooFinanceScraper implements Scraper{
                         .date(LocalDateTime.of(year, month, day, 0, 0))
                         .dividend(dividend)
                         .build());
+
+                count++;
             }
-            scrapResult.setDividendEntities(dividends);
+            System.out.println("총 " + count + "개의 배당금 데이터가 파싱되었습니다.");
+
+            scrapResult.setDividends(dividends);
         } catch (IOException e) {
             System.err.println("Failed to fetch data from Yahoo Finance: " + e.getMessage());
         } catch (Exception e) {

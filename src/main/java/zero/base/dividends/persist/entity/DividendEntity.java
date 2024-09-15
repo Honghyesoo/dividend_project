@@ -4,10 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import zero.base.dividends.dto.Dividend;
 
 import java.time.LocalDateTime;
@@ -26,8 +23,8 @@ public class DividendEntity  {
 
     public DividendEntity (Long companyId , Dividend dividend){
         this.companyId = companyId;
-        this.date =getDate();
-        this.dividend = getDividend();
+        this.date = dividend.getDate();
+        this.dividend = dividend.getDividend();
 
     }
 
