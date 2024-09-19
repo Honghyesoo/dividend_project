@@ -1,9 +1,6 @@
 package zero.base.dividends.persist.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import zero.base.dividends.dto.Dividend;
 
@@ -13,6 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @ToString
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint( //중복 데이터 저장을 방지하는 제약 조건
+                        columnNames = {"companyId","date"}
+                )
+        }
+)
 public class DividendEntity  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

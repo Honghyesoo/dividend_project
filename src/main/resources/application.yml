@@ -22,3 +22,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+scheduler:
+  scrap:
+    yahoo: "0 0 0 * * *"
