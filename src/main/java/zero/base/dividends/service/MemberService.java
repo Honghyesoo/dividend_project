@@ -28,18 +28,24 @@ public class MemberService implements UserDetailsService {
     public MemberEntity register(AuthDto.SignUp member){
         //중복된 아이디가 없는지 확인
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
-        if (!exists){
+        if (exists) {
             throw new RuntimeException("이미 사용중인 아이디 입니다.");
         }
+
         //중복된 아이디가 없다면 해당 id의 password 인코딩한 값을 레파지토리에 저장
         member.setPassword(this.passwordEncoder.encode(member.getPassword()));
         var result = this.memberRepository.save(member.toEntity());
-
         return result;
     }
 
     //로그인
     public MemberEntity authenticate(AuthDto.SignIn member){
-        return null;
+        var user =  this.memberRepository.findByUsername(member.getUsername())
+                .orElseThrow(() -> new RuntimeException("존재하지 않은 ID 입니다."));
+
+        if (!this.passwordEncoder.matches(member.getPassword(), user.getPassword())){
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+        return user;
     }
 }

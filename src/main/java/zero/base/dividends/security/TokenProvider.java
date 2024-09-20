@@ -4,12 +4,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.internal.StringUtil;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import zero.base.dividends.service.MemberService;
 
+import java.net.Authenticator;
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -18,31 +25,41 @@ import java.util.List;
 public class TokenProvider {
     private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60; // 1시간
     private static final String KEY_ROLES = "roles";
-    @Value("{spring.jwt.secret}")
-    private String secretKey;
+    private final MemberService memberService;
 
-    /**
-     * 토큰 생성 (발급)
-     * @param username
-     * @param roles
-     * @return
-     */
-    public String generateToken(String username, List<String> roles ){
+    // HS512를 위한 충분히 강력한 키 생성
+    private Key secretKey;
+
+    @PostConstruct
+    public void init() {
+        // 안전하고 충분히 긴 키 생성
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        System.out.println("Generated Secret Key: " + secretKey);
+    }
+
+    public String generateToken(String username, List<String> roles){
+        System.out.println(username);
+        System.out.println(roles);
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put(KEY_ROLES,roles);
+        claims.put(KEY_ROLES, roles);
 
-        //토큰이 생성한 시간부터 1시간까지 유효
         var now = new Date();
         var expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)//토큰 생성 시간
-                .setExpiration(expiredDate)//토큰 만료 시간
-                .signWith(SignatureAlgorithm.HS512,this.secretKey)//사용할 암호 알고리즘, 비밀키
+                .setIssuedAt(now)
+                .setExpiration(expiredDate)
+                .signWith(secretKey)  // 새로 생성한 비밀 키 사용
                 .compact();
+    }
 
 
+    public Authentication getAuthentication(String jwt){
+        UserDetails userDetails = this.memberService.loadUserByUsername(this.getUsername(jwt));
+        return  new UsernamePasswordAuthenticationToken(
+                userDetails,"",userDetails.getAuthorities()
+        );
     }
 
     public String getUsername(String token){
