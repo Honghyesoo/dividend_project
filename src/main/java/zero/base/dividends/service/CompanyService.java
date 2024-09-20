@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import zero.base.dividends.dto.Company;
+import zero.base.dividends.dto.CompanyDto;
 import zero.base.dividends.dto.ScrapedResult;
 import zero.base.dividends.persist.CompanyRepository;
 import zero.base.dividends.persist.DividendRepository;
@@ -28,7 +28,7 @@ public class CompanyService {
     private final DividendRepository dividendRepository;
 
     //회사가 있는지 확인하는 로직 & db에 저장되어 있는지 확인
-    public Company save(String ticker) {
+    public CompanyDto save(String ticker) {
         boolean exists = this.companyRepository.existsByTicker(ticker);
         if (exists) {
             throw new RuntimeException("already exists ticker -> " + ticker);
@@ -42,28 +42,28 @@ public class CompanyService {
     }
 
     //회사가 없다면 ? 실행하는 로직
-    private Company storeCompanyAndDividend(String ticker) {
+    private CompanyDto storeCompanyAndDividend(String ticker) {
         //ticker를 기준으로 회사를 스크래핑
-        Company company = this.yahooFinanceScraper.scrapCompanyByTicker(ticker);
-        if (ObjectUtils.isEmpty(company)) {
+        CompanyDto companyDto = this.yahooFinanceScraper.scrapCompanyByTicker(ticker);
+        if (ObjectUtils.isEmpty(companyDto)) {
             throw new RuntimeException("failed to scrap ticker -> " + ticker);
         }
         //해당 회사가 존재할 경우, 회사의 배당금 정보를 스크래핑
-        ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(company);
+        ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(companyDto);
 
         System.out.println("Scraped Result: 여기까지 데이터 정상 수량으로 들어오고있음 " + scrapedResult);
 
         //스크래핑 결과
-        CompanyEntity companyEntity = this.companyRepository.save(new CompanyEntity(company));
+        CompanyEntity companyEntity = this.companyRepository.save(new CompanyEntity(companyDto));
         System.out.println("회사 === " + companyEntity);
 
-        List<DividendEntity> dividendEntityList = scrapedResult.getDividends()
+        List<DividendEntity> dividendEntityList = scrapedResult.getDividendDtos()
                 .stream()
                 .map(e -> new DividendEntity(companyEntity.getId(), e))
                 .collect(Collectors.toList());
         List<DividendEntity> savedDividends = this.dividendRepository.saveAll(dividendEntityList);
         System.out.println("Saved Dividends, 최종 데이터 수: " + savedDividends.size());
-        return company;
+        return companyDto;
     }
 
     //like를 활용한 자동저장

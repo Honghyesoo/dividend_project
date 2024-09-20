@@ -2,7 +2,6 @@ package zero.base.dividends.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ScrapedResult {
-    private Company company;
-    private List<Dividend> dividends;
+    private CompanyDto companyDto;
+    private List<DividendDto> dividendDtos;
 
-    public ScrapedResult(){this.dividends = new ArrayList<>();}
+    public ScrapedResult(){this.dividendDtos = new ArrayList<>();}
 }

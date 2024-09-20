@@ -2,7 +2,7 @@ package zero.base.dividends.persist.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zero.base.dividends.dto.Dividend;
+import zero.base.dividends.dto.DividendDto;
 
 import java.time.LocalDateTime;
 
@@ -25,10 +25,10 @@ public class DividendEntity  {
     private LocalDateTime date;
     private String dividend;
 
-    public DividendEntity (Long companyId , Dividend dividend){
+    public DividendEntity (Long companyId , DividendDto dividendDto){
         this.companyId = companyId;
-        this.date = dividend.getDate();
-        this.dividend = dividend.getDividend();
+        this.date = dividendDto.getDate();
+        this.dividend = dividendDto.getDividend();
 
     }
 

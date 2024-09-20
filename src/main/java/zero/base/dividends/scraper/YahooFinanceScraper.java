@@ -6,8 +6,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import zero.base.dividends.dto.Company;
-import zero.base.dividends.dto.Dividend;
+import zero.base.dividends.dto.CompanyDto;
+import zero.base.dividends.dto.DividendDto;
 import zero.base.dividends.dto.ScrapedResult;
 import zero.base.dividends.dto.constants.Month;
 
@@ -24,14 +24,14 @@ public class YahooFinanceScraper implements Scraper{
 
 
     @Override
-    public ScrapedResult scrap(Company company) {
+    public ScrapedResult scrap(CompanyDto companyDto) {
         var scrapResult = new ScrapedResult();
-        scrapResult.setCompany(company);
+        scrapResult.setCompanyDto(companyDto);
 
         try {
             long now = System.currentTimeMillis() / 1000;
 
-            String url = String.format(STATISTICS_URL, company.getTicker(), START_TIME, now);
+            String url = String.format(STATISTICS_URL, companyDto.getTicker(), START_TIME, now);
             // Jsoup을 사용하여 Yahoo Finance 페이지에 연결
             Connection connection = Jsoup.connect(url);
             Document document = connection.get(); // HTML 문서 가져오기
@@ -45,8 +45,7 @@ public class YahooFinanceScraper implements Scraper{
             Element tableEle = parsingDivs.get(0); // table 전체 가져오기
             Element tbody = tableEle.children().get(1); // tbody 가져오기
 
-            List<Dividend> dividends = new ArrayList<>();
-            int count = 0;
+            List<DividendDto> dividendDtos = new ArrayList<>();
             for (Element e : tbody.children()) {
                 String txt = e.text();
                 if (!txt.endsWith("Dividend")) {
@@ -68,16 +67,10 @@ public class YahooFinanceScraper implements Scraper{
                     throw new RuntimeException("Unexpected Month enum value - > " + splits[0]);
                 }
 
-                dividends.add(Dividend.builder()
-                        .date(LocalDateTime.of(year, month, day, 0, 0))
-                        .dividend(dividend)
-                        .build());
-
-                count++;
+                dividendDtos.add(new DividendDto(LocalDateTime.of(year, month, day, 0, 0), dividend));
             }
-            System.out.println("총 " + count + "개의 배당금 데이터가 파싱되었습니다.");
 
-            scrapResult.setDividends(dividends);
+            scrapResult.setDividendDtos(dividendDtos);
         } catch (IOException e) {
             System.err.println("Failed to fetch data from Yahoo Finance: " + e.getMessage());
         } catch (Exception e) {
@@ -89,17 +82,15 @@ public class YahooFinanceScraper implements Scraper{
 
     //회사명 가져오는 로직
     @Override
-    public Company scrapCompanyByTicker(String ticker){
+    public CompanyDto scrapCompanyByTicker(String ticker){
         String url = String.format(SUMMARY_URL,ticker,ticker);
         try {
             Document document = Jsoup.connect(url).get();
             Element titleEle = document.getElementsByTag("h1").get(1);
             String title = titleEle.text().split("\\(")[0].trim();
             // ex) abc - def - xzy -> "-"기준으로 쪼갬
-            return Company.builder()
-                    .ticker(ticker)
-                    .name(title)
-                    .build();
+
+            return new CompanyDto(ticker,title);
         }catch (IOException e ){
             e.printStackTrace();
         }

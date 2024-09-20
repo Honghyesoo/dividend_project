@@ -6,11 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import zero.base.dividends.dto.Company;
+import zero.base.dividends.dto.CompanyDto;
 import zero.base.dividends.persist.entity.CompanyEntity;
 import zero.base.dividends.service.CompanyService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/company")
@@ -34,16 +32,16 @@ public class CompanyController {
 
     // 회사 저장
     @PostMapping
-    public ResponseEntity<?> addCompany(@RequestBody Company request){
+    public ResponseEntity<?> addCompany(@RequestBody CompanyDto request){
         String ticker = request.getTicker().trim();
         if (ObjectUtils.isEmpty(ticker)){
             throw  new RuntimeException("ticker is empty");
         }
-        Company company = this.companyService.save(ticker);
+        CompanyDto companyDto = this.companyService.save(ticker);
         // 자동 저장
-        this.companyService.addAutoCompleteKeyword(company.getName());
+        this.companyService.addAutoCompleteKeyword(companyDto.getName());
 
-        return ResponseEntity.ok(company);
+        return ResponseEntity.ok(companyDto);
     }
 
     //회사 삭제
