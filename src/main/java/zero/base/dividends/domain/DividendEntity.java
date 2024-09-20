@@ -1,4 +1,4 @@
-package zero.base.dividends.persist.entity;
+package zero.base.dividends.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +21,7 @@ public class DividendEntity  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long companyId;
     private LocalDateTime date;
     private String dividend;

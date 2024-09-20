@@ -34,3 +34,6 @@ spring:
 scheduler:
   scrap:
     yahoo: "0 0 0 * * *"
+
+jwt:
+  secret: c3RvY2stc3ByaW5nLWJvb3QtZGl2aWRlbmQtcHJvamVjdC10dXRvcmlhbC1qd3Qtc2VjcmV0LWtleQo=

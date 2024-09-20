@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import zero.base.dividends.dto.CompanyDto;
-import zero.base.dividends.persist.entity.CompanyEntity;
+import zero.base.dividends.domain.CompanyEntity;
 import zero.base.dividends.service.CompanyService;
 
 @RestController

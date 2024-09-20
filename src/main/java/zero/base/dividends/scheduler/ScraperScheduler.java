@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 import zero.base.dividends.dto.CompanyDto;
 import zero.base.dividends.dto.ScrapedResult;
 import zero.base.dividends.dto.constants.CacheKey;
-import zero.base.dividends.persist.CompanyRepository;
-import zero.base.dividends.persist.DividendRepository;
-import zero.base.dividends.persist.entity.CompanyEntity;
-import zero.base.dividends.persist.entity.DividendEntity;
+import zero.base.dividends.repository.CompanyRepository;
+import zero.base.dividends.repository.DividendRepository;
+import zero.base.dividends.domain.CompanyEntity;
+import zero.base.dividends.domain.DividendEntity;
 import zero.base.dividends.scraper.Scraper;
 
 import java.util.List;

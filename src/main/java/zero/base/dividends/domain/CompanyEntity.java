@@ -1,4 +1,4 @@
-package zero.base.dividends.persist.entity;
+package zero.base.dividends.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

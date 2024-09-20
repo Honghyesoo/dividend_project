@@ -1,8 +1,8 @@
-package zero.base.dividends.persist;
+package zero.base.dividends.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import zero.base.dividends.persist.entity.DividendEntity;
+import zero.base.dividends.domain.DividendEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,12 +1,11 @@
-package zero.base.dividends.persist;
+package zero.base.dividends.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import zero.base.dividends.persist.entity.CompanyEntity;
+import zero.base.dividends.domain.CompanyEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
