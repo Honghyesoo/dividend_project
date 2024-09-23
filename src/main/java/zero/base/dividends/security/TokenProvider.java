@@ -14,9 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import zero.base.dividends.service.MemberService;
 
-import java.net.Authenticator;
+
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -38,8 +37,6 @@ public class TokenProvider {
     }
 
     public String generateToken(String username, List<String> roles){
-        System.out.println(username);
-        System.out.println(roles);
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, roles);
 

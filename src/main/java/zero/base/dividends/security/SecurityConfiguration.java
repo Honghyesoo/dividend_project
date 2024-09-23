@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/*/signup", "/*/signin", "/h2-console/**").permitAll()
+                        .requestMatchers("/*/signup", "/*/signin", "/finance/dividend/**","/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers().frameOptions().disable()  // 프레임 옵션 비활성화

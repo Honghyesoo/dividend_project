@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zero.base.dividends.domain.MemberEntity;
 import zero.base.dividends.dto.AuthDto;
+import zero.base.dividends.exception.impl.AlreadyExistUserException;
 import zero.base.dividends.repository.MemberRepository;
 
 @Slf4j
@@ -29,7 +30,7 @@ public class MemberService implements UserDetailsService {
         //중복된 아이디가 없는지 확인
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if (exists) {
-            throw new RuntimeException("이미 사용중인 아이디 입니다.");
+            throw new AlreadyExistUserException();
         }
 
         //중복된 아이디가 없다면 해당 id의 password 인코딩한 값을 레파지토리에 저장

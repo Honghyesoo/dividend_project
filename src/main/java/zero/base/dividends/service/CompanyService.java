@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import zero.base.dividends.dto.CompanyDto;
 import zero.base.dividends.dto.ScrapedResult;
+import zero.base.dividends.exception.impl.NoCompanyException;
 import zero.base.dividends.repository.CompanyRepository;
 import zero.base.dividends.repository.DividendRepository;
 import zero.base.dividends.domain.CompanyEntity;
@@ -96,7 +97,7 @@ public class CompanyService {
     public String deleteCompany(String ticker){
         this.companyRepository.findByTicker(ticker);
         var company = this.companyRepository.findByTicker(ticker)
-                .orElseThrow(()-> new RuntimeException("존재하지 않은 회사입니다."));
+                .orElseThrow(NoCompanyException::new);
 
         //배당금 데이터 삭제
         this.dividendRepository.deleteAllByCompanyId(company.getId());

@@ -17,6 +17,7 @@ public class AuthDto {
     public static class SignUp {
         private String username;
         private String password;
+
         private List<String> roles;
 
         public MemberEntity toEntity() {
